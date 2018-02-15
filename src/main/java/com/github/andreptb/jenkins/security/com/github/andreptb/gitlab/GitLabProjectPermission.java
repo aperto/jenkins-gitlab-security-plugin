@@ -1,6 +1,7 @@
 package com.github.andreptb.jenkins.security.com.github.andreptb.gitlab;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.gitlab.api.models.GitlabAccessLevel;
 
 public class GitLabProjectPermission {

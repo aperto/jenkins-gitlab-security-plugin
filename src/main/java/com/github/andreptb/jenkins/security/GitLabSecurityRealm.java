@@ -1,20 +1,13 @@
 package com.github.andreptb.jenkins.security;
 
-import hudson.Extension;
-import hudson.model.Descriptor;
-import hudson.security.AbstractPasswordBasedSecurityRealm;
-import hudson.security.GroupDetails;
-import hudson.security.SecurityRealm;
-import hudson.util.FormValidation;
-import hudson.util.Messages;
-import hudson.util.Secret;
+import com.fasterxml.jackson.core.JsonParseException;
+
 import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.AuthenticationServiceException;
 import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonParseException;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabSession;
 import org.gitlab.api.models.GitlabUser;
@@ -23,9 +16,19 @@ import org.kohsuke.stapler.QueryParameter;
 import org.springframework.dao.DataAccessException;
 
 import javax.servlet.ServletException;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import hudson.Extension;
+import hudson.model.Descriptor;
+import hudson.security.AbstractPasswordBasedSecurityRealm;
+import hudson.security.GroupDetails;
+import hudson.security.SecurityRealm;
+import hudson.util.FormValidation;
+import hudson.util.Messages;
+import hudson.util.Secret;
 
 public class GitLabSecurityRealm extends AbstractPasswordBasedSecurityRealm {
 

@@ -1,11 +1,8 @@
 package com.github.andreptb.jenkins.security;
 
-import com.github.andreptb.jenkins.security.com.github.andreptb.gitlab.GitLabProjectPermission;
-import com.github.andreptb.jenkins.security.com.github.andreptb.gitlab.GitLabProjectPermissions;
 import com.github.andreptb.jenkins.security.com.github.andreptb.gitlab.GitLabProjectWithPermission;
 import com.github.andreptb.jenkins.security.model.GitLabGrantedAuthority;
-import hudson.security.Permission;
-import jenkins.model.Jenkins;
+
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.userdetails.User;
@@ -13,13 +10,18 @@ import org.acegisecurity.userdetails.UserDetails;
 import org.apache.commons.lang.StringUtils;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabAccessLevel;
+import org.gitlab.api.models.GitlabPermission;
 import org.gitlab.api.models.GitlabProject;
+import org.gitlab.api.models.GitlabProjectAccessLevel;
 import org.gitlab.api.models.GitlabUser;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import hudson.security.Permission;
+import jenkins.model.Jenkins;
 
 public class GitLabUserDetailsBuilder {
 
@@ -47,15 +49,15 @@ public class GitLabUserDetailsBuilder {
 
     private GrantedAuthority buildGrantedAuthority(GitlabAPI gitlabAPI, GitlabProject project) throws IOException {
         GitLabProjectWithPermission projectWithPermission = gitlabAPI.retrieve().to(GitlabProject.URL + "/" + project.getId(), GitLabProjectWithPermission.class);
-        GitLabProjectPermissions permissions = projectWithPermission.getPermissions();
-        GitLabProjectPermission access = permissions.getProjectAccess();
+        GitlabPermission permissions = projectWithPermission.getPermissions();
+        GitlabProjectAccessLevel access = permissions.getProjectAccess();
         if(access == null) {
-            access = permissions.getGroupAccess();
+            access = permissions.getProjectGroupAccess();
         }
         return new GitLabGrantedAuthority(projectWithPermission.getNamespace().getName(), projectWithPermission.getName(), createPermissions(access));
     }
 
-    private Collection<Permission> createPermissions(GitLabProjectPermission access) {
+    private Collection<Permission> createPermissions(GitlabProjectAccessLevel access) {
         Collection<Permission> permissions = new ArrayList<Permission>();
         permissions.add(Permission.READ);
         permissions.add(Jenkins.READ);
